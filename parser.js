@@ -24,7 +24,7 @@ const register = {
 	}
 };
 
-module.export = function (parser) {
+module.exports = function (parser) {
 	if (parser.tdk) {
 		return;
 	}
@@ -33,7 +33,7 @@ module.export = function (parser) {
 		const info = JSON.parse(message);
 
 		if (register[info.type]) {
-			return register[info.type](message);
+			return register[info.type](info);
 		}
 	}
 };
