@@ -1,19 +1,8 @@
 const mocha = require('mocha');
+const {
+	tdkLog, progress
+} = require('./src/logger');
 const IS_SCAN = process.env.TDK_MODE === 'scan';
-let tested = 0;
-
-const log = global.log ?  global.log : function (type, message) {
-	console.log(type, message);
-}
-
-const progress = global.progress ? global.progress : function () {
-	tested++;
-	console.log(tested);
-}
-
-function useLog(message) {
-	log('tdk', JSON.stringify(message));
-}
 
 function getNodeInfo(node) {
 	const baseInfo = {
@@ -84,7 +73,7 @@ module.exports = function (runner) {
 	
 	const caseTree = getCaseTree(runner.suite);
 	
-	useLog({
+	tdkLog({
 		caseTree
 	});
 
@@ -93,14 +82,14 @@ module.exports = function (runner) {
 	}
 
   runner.on('start', function() {
-		useLog({
+		tdkLog({
 			type: 'testStart',
 			total: this.total
 		});
 	});
 
   runner.on('test', function(test) {
-		useLog({
+		tdkLog({
 			type: 'caseTest',
 			path: getPath(test),
 			title: test.title
@@ -112,7 +101,7 @@ module.exports = function (runner) {
 	});
 	
   runner.on('pass', function(test) {
-		useLog({
+		tdkLog({
 			type: 'casePassed',
 			path: getPath(test),
 			title: test.title
@@ -124,7 +113,7 @@ module.exports = function (runner) {
 			stack
 		} = err;
 
-		useLog({
+		tdkLog({
 			type: 'caseFailed',
 			path: getPath(test),
 			title: test.title,
@@ -133,7 +122,7 @@ module.exports = function (runner) {
   });
 
   runner.on('end', function() {
-		useLog({
+		tdkLog({
 			type: 'testEnd'
 		});
   });
