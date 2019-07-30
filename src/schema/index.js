@@ -61,8 +61,7 @@ exports.schemas = function (schemas, data) {
 	return validator(data);
 };
 
-exports.Defination = function (symbol, options) {
-	const { schemas } = options;
+exports.definition = function (symbol, schemas) {
 	const validate = type.Schemas.compiler().build(schemas);
 
 	context[symbol] = validate;

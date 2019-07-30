@@ -156,7 +156,7 @@ module.exports = function install(type) {
 		Validator() {
 			return function (data) {
 				if (typeof data !== 'boolean') {
-					return 'A boolean value expected.';
+					throw new Error('A boolean value expected.');
 				}
 			};
 		}

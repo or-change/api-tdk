@@ -1,4 +1,4 @@
-module.exports = function install(type) {
+module.exports = function install(type, context) {
 	const symbolReg = type.DefinitionSymbolReg = /^[A-Z][A-Za-z0-9]*/;
 
 	type.define('definition', {
@@ -21,6 +21,8 @@ module.exports = function install(type) {
 				if (!symbolReg.test(symbol)) {
 					throw new Error('Invalid Definition symbol.');
 				}
+
+				finalOptions.symbol = symbol;
 	
 				return finalOptions;
 			};

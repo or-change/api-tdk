@@ -76,7 +76,12 @@ module.exports = function install(type) {
 				}
 
 				if (!options.additional) {
-					Object.keys(dataNode).find(property => !validateMapping[property]);
+					const addtionalAttribute = 
+						Object.keys(dataNode).find(property => !validateMapping[property]);
+
+					if (addtionalAttribute) {
+						throw new Error('Object has addtional attribute.');
+					}
 				}
 				
 				for (const propertyName in validateMapping) {
@@ -113,20 +118,26 @@ module.exports = function install(type) {
 	
 				if (length) {
 					if (typeof length !== 'object') {
-						throw new Error('');
+						throw new Error('Invalid array length.');
 					}
+
+					finalOptions.length = length;
 				}
 	
 				return finalOptions;
 			};
 		},
 		Validator(options) {
-			const itemOptions = options.items;
-			const itemValidate = type.registry[itemOptions.type].Validator(itemOptions);
+			const { items, length} = options;
+			const itemValidate = type.registry[items.type].Validator(items);
 
 			return function validate(dataNode) {
 				if (!Array.isArray(dataNode)) {
 					throw new Error('An array expected.');
+				}
+
+				if (dataNode.length < length.min || dataNode.length > length.max) {
+					throw new Error('Array length is out of range.');
 				}
 
 				dataNode.forEach(item => itemValidate(item));
