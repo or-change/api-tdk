@@ -1,6 +1,6 @@
 const mocha = require('mocha');
 const {
-	tdkLog, progress
+	tdkLog, progress, structure, end
 } = require('./src/logger');
 const IS_SCAN = process.env.TDK_MODE === 'scan';
 
@@ -73,9 +73,7 @@ module.exports = function (runner) {
 	
 	const caseTree = getCaseTree(runner.suite);
 	
-	tdkLog({
-		caseTree
-	});
+	structure(caseTree);
 
 	if (IS_SCAN) {
 		runner.abort();
@@ -89,15 +87,21 @@ module.exports = function (runner) {
 	});
 
   runner.on('test', function(test) {
+		progress();
+		
 		tdkLog({
-			type: 'caseTest',
+			type: 'caseStart',
 			path: getPath(test),
 			title: test.title
 		});
 	});
 
-  runner.on('test end', function() {
-		progress();
+  runner.on('test end', function(test) {
+		tdkLog({
+			type: 'caseEnd',
+			path: getPath(test),
+			title: test.title
+		});
 	});
 	
   runner.on('pass', function(test) {
@@ -125,5 +129,7 @@ module.exports = function (runner) {
 		tdkLog({
 			type: 'testEnd'
 		});
+
+		end();
   });
 }
