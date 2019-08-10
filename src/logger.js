@@ -14,7 +14,7 @@ exports.progress = isExist('progress') ? global._TDK_.progress : function () {
 }
 
 exports.structure = isExist('structure') ? global._TDK_.structure : function (structure) {
-	console.log('caseTree', structure);
+	console.log('structure', structure);
 }
 
 exports.end = isExist('end') ? global._TDK_.end : function () {

@@ -45,35 +45,34 @@ const getPath = function (node) {
 	return path;
 }
 
-const getCaseTree = function (node, caseTree = {
-	root: true,
-	children: []
-}) {
+const getStructure = function (node, structure) {
 	const { suites, tests } = node;
 
 	tests.forEach((test) => {
 		const info = getNodeInfo(test);
 
-		caseTree.children.push(info);
+		structure.children.push(info);
 	});
 
 	suites.forEach((suite) => {
 		const info = getNodeInfo(suite); 
 		
-		caseTree.children.push(info);
+		structure.children.push(info);
 
-		getCaseTree(suite, info);
+		getStructure(suite, info);
 	});
 
-	return caseTree;
+	return structure;
 };
 
 module.exports = function (runner) {
 	mocha.reporters.Base.call(this, runner);
 	
-	const caseTree = getCaseTree(runner.suite);
-	
-	structure(caseTree);
+	structure(getStructure(runner.suite, {
+		root: true,
+		children: [],
+		total: runner.total
+	}));
 
 	if (IS_SCAN) {
 		runner.abort();
